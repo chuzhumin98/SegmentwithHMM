@@ -147,6 +147,8 @@ public class ReadTrain {
 			for (int i = 0; i < N; i++) {
 				pi[i] /= (double)countUseful;
 			}
+			this.normalMatrix(matrixA);
+
 			this.toStringPI();
 			this.toStringA();
 		} catch (IOException e) {
@@ -184,6 +186,30 @@ public class ReadTrain {
 			output += "\n";
 		}
 		System.out.println(output);
+	}
+
+	/**
+	 * 对矩阵做归一化处理
+	 * 
+	 * @param M
+	 */
+	public void normalMatrix(double[][] M) {
+		for (int i = 0; i < M.length; i++) {
+			double sums = 0.0;
+			for (int j = 0; j < M[i].length; j++) {
+				sums += M[i][j];
+			}
+			if (sums < 1e-5) {
+				System.err.println("the denerator is zero!");
+				for (int j = 0; j < M[i].length; j++) {
+					M[i][j] = 1.0 / (double)M[i].length;
+				}
+			} else {
+				for (int j = 0; j < M[i].length; j++) {
+					M[i][j] /= sums;
+				}
+			}
+		}
 	}
 	
 	public static void main(String[] args) {
