@@ -42,17 +42,37 @@ public class testModel {
 		if (delta[M-1][ReadTrain.S] > delta[M-1][ReadTrain.E]) {
 			maxIndex = ReadTrain.S;
 		}
+		int[] result = new int [M];
+		result[M-1] = maxIndex;
+		
 		System.out.println("max Prob:"+delta[M-1][maxIndex]);
 		System.out.print(maxIndex);
 		for (int i = M-1; i >= 1; i--) {
 			maxIndex = psi[i][maxIndex];
+			result[i-1] = maxIndex;
 			System.out.print(maxIndex);
 		}
-		return input;
+		System.out.println();
+		String splitWords = "";
+		for (int i = 0; i < M; i++) {
+			splitWords += input.charAt(i);
+			if (result[i] == ReadTrain.E || result[i] == ReadTrain.S) {
+				splitWords += " ";
+			}
+		}
+		return splitWords;
 	}
 	
 	public static void main(String[] args) {
 		testModel model = new testModel();
-		model.segment("我爱中华人民共和国。");
+		String words = "解决好经济和社会发展中一系列关乎全局的重大问题";
+		String splits = model.segment(words);
+		System.out.println("原语句："+words);
+		System.out.println("分词后："+splits);
+		
+		words = "邓小平理论以及根据这一理论形成的“一个中心、两个基本点”的基本路线和党在社会主义初级阶段的政治、经济、文化建设的基本纲领";
+		splits = model.segment(words);
+		System.out.println("原语句："+words);
+		System.out.println("分词后："+splits);
 	}
 }
