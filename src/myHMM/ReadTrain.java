@@ -257,8 +257,10 @@ public class ReadTrain {
 		ReadTrain train = ReadTrain.getInstance();
 		train.toStringBPart('我');
 		train.toStringBPart('中');
-		train.toStringBPart('瀛');
+		train.toStringBPart('俊');
 		train.toStringBPart('计');
 		train.toStringBPart('年');
+		train.toStringBPart('钾');
+		train.toStringBPart('的');
 	}
 }
