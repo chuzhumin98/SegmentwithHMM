@@ -98,15 +98,44 @@ public class ReadTrain {
 						//下面配置A和B矩阵
 						if (lines[i].length() == 1) {
 							if (predOne != -1) {
-								this.matrixA[predOne][S] += 1.0;
-								predOne = S;
+								this.matrixA[predOne][S] += 1.0;	
 							}
+							predOne = S;
+							
 							Character thisKey = lines[i].charAt(0); 
 							if (this.matrixB[S].containsKey(thisKey)) {
 								double predValue = (double) this.matrixB[S].get(thisKey);
 								this.matrixB[S].put(thisKey, predValue+1);
 							} else {
 								this.matrixB[S].put(thisKey, 1.0);
+							}
+						} else {
+							if (predOne != -1) {
+								this.matrixA[predOne][B] += 1.0;
+							}
+							predOne = E;
+							if (lines[i].length() == 2) {
+								this.matrixA[B][E] += 1.0;
+							} else {
+								this.matrixA[B][M] += 1.0;
+								this.matrixA[M][M] += lines[i].length() - 3.0;
+								this.matrixA[M][E] += 1.0;
+							}
+							
+							for(int j = 0; j < lines[i].length(); j++) {
+								int index = E;
+								if (j == 0) {
+									index = B;
+								} else if (j != lines[i].length() - 1) {
+									index = M;
+								}
+								Character thisKey = lines[i].charAt(j); 
+								if (this.matrixB[index].containsKey(thisKey)) {
+									double predValue = (double) this.matrixB[index].get(thisKey);
+									this.matrixB[index].put(thisKey, predValue+1);
+								} else {
+									this.matrixB[index].put(thisKey, 1.0);
+								}
 							}
 						}
 					}	
@@ -119,6 +148,7 @@ public class ReadTrain {
 				pi[i] /= (double)countUseful;
 			}
 			this.toStringPI();
+			this.toStringA();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -139,6 +169,20 @@ public class ReadTrain {
 			}
 		}
 		output += " ]";
+		System.out.println(output);
+	}
+	
+	/**
+	 * 输出A矩阵
+	 */
+	public void toStringA() {
+		String output = "matrix A:\n";
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				output += this.matrixA[i][j] + " ";
+			}
+			output += "\n";
+		}
 		System.out.println(output);
 	}
 	
