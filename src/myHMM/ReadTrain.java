@@ -47,7 +47,7 @@ public class ReadTrain {
 		matrixA = new double [N][N];
 		matrixB = new HashMap [N];
 		for (int i = 0; i < N; i++) {
-			matrixB[i] = new HashMap<String, Double>();
+			matrixB[i] = new HashMap<Character, Double>();
 		}
 		pi = new double [N];
 		for (int i = 0; i < N; i++) {
@@ -62,6 +62,7 @@ public class ReadTrain {
 	/**
 	 * 读取训练集
 	 */
+	@SuppressWarnings("unchecked")
 	private void readFile() {
 		InputStreamReader isr;
 		BufferedReader br;
@@ -79,9 +80,11 @@ public class ReadTrain {
 				count++;
 				String[] lines = line.split(" ");
 				boolean isFirst = true; //判断是否为首个字段
+				int predOne = -1; //初始化前一个状态为-1，表示无前一个状态
 				for (int i = 0; i < lines.length; i++) {
 					if (lines[i].length() != 0) {
 						//System.out.println(lines[i]+" "+lines[i].length());
+						//下面配置PI向量
 						if (isFirst) {
 							countUseful++;
 							if (lines[i].length() == 1) {
@@ -90,6 +93,21 @@ public class ReadTrain {
 								pi[B] += 1.0;
 							}
 							isFirst = false;
+						}
+						
+						//下面配置A和B矩阵
+						if (lines[i].length() == 1) {
+							if (predOne != -1) {
+								this.matrixA[predOne][S] += 1.0;
+								predOne = S;
+							}
+							Character thisKey = lines[i].charAt(0); 
+							if (this.matrixB[S].containsKey(thisKey)) {
+								double predValue = (double) this.matrixB[S].get(thisKey);
+								this.matrixB[S].put(thisKey, predValue+1);
+							} else {
+								this.matrixB[S].put(thisKey, 1.0);
+							}
 						}
 					}	
 				}
