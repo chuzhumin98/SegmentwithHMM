@@ -65,26 +65,25 @@ public class ReadTrain {
 	private void readFile() {
 		InputStreamReader isr;
 		BufferedReader br;
-		int count = 0;
+		int count = 0; //总行数
+		int countUseful = 0; //有效行数
 		try {
 			isr = new InputStreamReader(new FileInputStream(ReadTrain.trainPath), "utf-8");
 			br = new BufferedReader(isr);
 			String line;
 			while(true) {
 				line = br.readLine();
-				count++;
-				if (count > 10) {
-					break;
-				}
 				if (line == null) {
 					break;
 				}
+				count++;
 				String[] lines = line.split(" ");
 				boolean isFirst = true; //判断是否为首个字段
 				for (int i = 0; i < lines.length; i++) {
 					if (lines[i].length() != 0) {
 						//System.out.println(lines[i]+" "+lines[i].length());
 						if (isFirst) {
+							countUseful++;
 							if (lines[i].length() == 1) {
 								pi[S] += 1.0;
 							} else {
@@ -95,10 +94,34 @@ public class ReadTrain {
 					}	
 				}
 			}
+			System.out.println("lines:"+count);
+			System.out.println("useful lines:"+countUseful);
+			
+			for (int i = 0; i < N; i++) {
+				pi[i] /= (double)countUseful;
+			}
+			this.toStringPI();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * 输出PI向量
+	 */
+	public void toStringPI() {
+		String output = "";
+		output += "pi array:\n[";
+		for (int i = 0; i < N; i++) {
+			if (i == 0) {
+				output += " "+pi[i];
+			} else {
+				output += ", "+pi[i];
+			}
+		}
+		output += " ]";
+		System.out.println(output);
 	}
 	
 	public static void main(String[] args) {
