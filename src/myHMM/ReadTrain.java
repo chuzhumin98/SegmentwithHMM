@@ -158,6 +158,38 @@ public class ReadTrain {
 	}
 	
 	/**
+	 * 得到针对某个词的B矩阵分布值
+	 * 
+	 * @param word
+	 * @return
+	 */
+	public double[] getSqecifyB(Character word) {
+		double[] prob = new double [N];
+		for (int i = 0; i < N; i++) {
+			if (this.matrixB[i].containsKey(word)) {
+				prob[i] = (double) this.matrixB[i].get(word);
+			} else {
+				prob[i] = 0.0; //没有就如实记录为0
+			}
+		}
+		//下面进行归一化操作
+		double sums = 0.0;
+		for (int i = 0; i < N; i++) {
+			sums += prob[i];
+		}
+		if (sums < 1e-5) {
+			for (int i = 0; i < N; i++) {
+				prob[i] = 1.0 / (double)N;
+			} 
+		} else {
+			for (int i = 0; i < N; i++) {
+				prob[i] /= (double)sums;
+			}
+		}
+		return prob;
+	}
+	
+	/**
 	 * 输出PI向量
 	 */
 	public void toStringPI() {
@@ -212,7 +244,21 @@ public class ReadTrain {
 		}
 	}
 	
+	public void toStringBPart(Character word) {
+		double[] prob = this.getSqecifyB(word);
+		String output = word + ": ";
+		for (int i = 0; i < prob.length; i++) {
+			output += prob[i] + " ";
+		}
+		System.out.println(output);
+	}
+	
 	public static void main(String[] args) {
 		ReadTrain train = ReadTrain.getInstance();
+		train.toStringBPart('我');
+		train.toStringBPart('中');
+		train.toStringBPart('瀛');
+		train.toStringBPart('计');
+		train.toStringBPart('年');
 	}
 }
