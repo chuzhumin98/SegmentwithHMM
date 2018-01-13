@@ -1,3 +1,4 @@
 # ignore these types of file
 icwb2-data/scripts/*.txt
+output/
 /bin/

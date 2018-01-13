@@ -1,6 +1,19 @@
 package myHMM;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+
 public class testModel {
+	private final static String testPath = "icwb2-data/testing/pku_test.utf8"; //存储的训练集的地址
 	
 	/**
 	 * 针对输入的句子进行分词处理
@@ -63,8 +76,42 @@ public class testModel {
 		return splitWords;
 	}
 	
-	public static void main(String[] args) {
+	public void doTest() throws FileNotFoundException, UnsupportedEncodingException {
+		InputStreamReader isr = null;
+		BufferedReader br;
+		String outPath = "output/HMM.txt";
+		PrintWriter out = new PrintWriter(
+				new BufferedWriter(new OutputStreamWriter(
+						new FileOutputStream(outPath),"GB2312"))); //输出文件
+		
+		try {
+			isr = new InputStreamReader(new FileInputStream(testModel.testPath), "utf-8");
+		} catch (UnsupportedEncodingException | FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		br = new BufferedReader(isr);
+		String line;
+		while(true) {
+			try {
+				line = br.readLine();
+				if (line == null || line.length() == 0) {
+					break;
+				}
+				String splits = this.segment(line);
+				out.println(splits);
+				System.out.println(splits);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
 		testModel model = new testModel();
+		model.doTest();
+		/**
 		String words = "解决好经济和社会发展中一系列关乎全局的重大问题";
 		String splits = model.segment(words);
 		System.out.println("原语句："+words);
@@ -74,5 +121,6 @@ public class testModel {
 		splits = model.segment(words);
 		System.out.println("原语句："+words);
 		System.out.println("分词后："+splits);
+		*/
 	}
 }
