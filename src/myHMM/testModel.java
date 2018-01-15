@@ -33,11 +33,7 @@ public class testModel {
 			double[] prob = train.getSqecifyB(word);
 			if (i == 0) { //初始的一层
 				for (int j = 0; j < N; j++) {
-					if (j != ReadTrain.B && j != ReadTrain.S) {
-						delta[i][j] = 0.0;
-					} else {
-						delta[i][j] = train.pi[j] * prob[j];
-					}				
+					delta[i][j] = train.pi[j] * prob[j];
 				}
 			} else {
 				for (int j = 0; j < N; j++) {
