@@ -16,6 +16,27 @@ public class testModel {
 	private final static String testPath = "icwb2-data/testing/pku_test.utf8"; //存储的训练集的地址
 	
 	/**
+	 * 对于某一层的概率做归一化
+	 * 
+	 * @param prob
+	 */
+	private void normalProb(double[] prob) { 
+		double sum = 0.0;
+		for (int i = 0; i < prob.length; i++) {
+			sum += prob[i];
+		}
+		if (sum < 1e-200) {
+			for (int i = 0; i < prob.length; i++) {
+				prob[i] = 1.0 / (double)prob.length;
+			}
+		} else {
+			for (int i = 0; i < prob.length; i++) {
+				prob[i] /= sum;
+			}
+		}
+	}
+	
+	/**
 	 * 针对输入的句子进行分词处理
 	 * 输出分词只有的结果，中间用空格隔开
 	 * 
@@ -49,6 +70,7 @@ public class testModel {
 					psi[i][j] = index;
 					delta[i][j] = maxValue * prob[j];
 				}
+				this.normalProb(delta[i]);
 			}
 		}
 		int maxIndex = ReadTrain.E;
