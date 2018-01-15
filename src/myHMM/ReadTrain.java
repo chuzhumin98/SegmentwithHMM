@@ -22,6 +22,7 @@ public class ReadTrain {
 	
 	@SuppressWarnings("rawtypes")
 	public HashMap[] matrixB; //观测概率矩阵
+	private int[] countB; //计数各状态类型词汇的个数
 	
 	public double[] pi; //初值矩阵
 	
@@ -50,8 +51,10 @@ public class ReadTrain {
 			matrixB[i] = new HashMap<Character, Double>();
 		}
 		pi = new double [N];
+		countB = new int [N];
 		for (int i = 0; i < N; i++) {
 			pi[i] = 0.0;
+			countB[i] = 0;
 			for (int j = 0; j < N; j++) {
 				matrixA[i][j] = 0.0;
 			}
@@ -109,6 +112,7 @@ public class ReadTrain {
 							} else {
 								this.matrixB[S].put(thisKey, 1.0);
 							}
+							countB[S]++;
 						} else {
 							if (predOne != -1) {
 								this.matrixA[predOne][B] += 1.0;
@@ -136,6 +140,7 @@ public class ReadTrain {
 								} else {
 									this.matrixB[index].put(thisKey, 1.0);
 								}
+								countB[index]++;
 							}
 						}
 					}	
@@ -172,19 +177,9 @@ public class ReadTrain {
 				prob[i] = 0.0; //没有就如实记录为0
 			}
 		}
-		//下面进行归一化操作
-		double sums = 0.0;
+		//下面进行去分母操作
 		for (int i = 0; i < N; i++) {
-			sums += prob[i];
-		}
-		if (sums < 1e-5) {
-			for (int i = 0; i < N; i++) {
-				prob[i] = 1.0 / (double)N;
-			} 
-		} else {
-			for (int i = 0; i < N; i++) {
-				prob[i] /= (double)sums;
-			}
+			prob[i] = (prob[i]+0.5/(double)countB[i])/((double)countB[i]+1);
 		}
 		return prob;
 	}
